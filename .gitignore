@@ -1,2 +1,5 @@
 db.sqlite3
 .env
+authapi/__pycache__
+backend/__pycache__
+passwordsapi/__pycache__
