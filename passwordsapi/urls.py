@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import password_page
+from .views import CreatePasswordView, DeletePasswordView
 urlpatterns = [
-    path("passwords/",password_page,name="passwords")
+    path("passwords/",CreatePasswordView.as_view(),name="passwords"),
+    path("passwords/delete/<int:pk>/",DeletePasswordView.as_view(),name="delete_password")
 ]
