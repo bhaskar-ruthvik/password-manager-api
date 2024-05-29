@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from dotenv import load_dotenv
 import os
 from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad
 from base64 import b64encode,b64decode
 # Create your views here.
 class CreatePasswordView(generics.ListCreateAPIView):
@@ -19,8 +20,8 @@ class CreatePasswordView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         if serializer.is_valid():
             pwd = serializer.validated_data["password"].encode('utf-8')
-            cipher = AES.new(os.getenv("AES_KEY").encode(),AES.MODE_CTR,nonce=os.getenv("NONCE").encode(),initial_value=os.getenv('IV').encode())
-            ciphertext = cipher.encrypt(pwd)
+            cipher = AES.new(os.getenv("AES_KEY").encode(),AES.MODE_CBC,iv=os.getenv('NONCE').encode())
+            ciphertext = cipher.encrypt(pad(pwd,AES.block_size))
             passwd = b64encode(ciphertext).decode()
             serializer.save(password = passwd,user=self.request.user)
         else:
